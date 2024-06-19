@@ -6,6 +6,7 @@
 
 import glob
 import os
+import pickle
 import mne 
 import numpy as np
 import pandas as pd
@@ -537,6 +538,77 @@ class readEpochDenoise:
         
         for i, j in zip(groups, subject_list):
             path = os.path.join(f'preprocessed_data/{events}')
-            file_name = path + '_' + '{0}.npy'.format(i)
-            np.save(os.path.join(file_name), j)
+            
+            
+            if False:
+                file_name = path + '_' + '{0}.npy'.format(i)
+                np.save(os.path.join(file_name), j)
+            else:
+                file_name = path + '_' + '{0}.pkl'.format(i)
+                with open(file_name, 'wb') as handle:
+                    pickle.dump(j, handle, protocol=pickle.HIGHEST_PROTOCOL)
+                    
+
+    def load_data(self, standard = False, target = False, distractor = False, 
+                     reaction_time = False, all_stimuli = False):
+        
+        """
+        This function saves the preprocessed EEG data into a file as a ndarray
+        using the following steps:
+            a. First, the class ("readEpochDenoise") is fed with data for all
+            the subject groups and executed.
+            b. When calling this function, one of the input parameters/data is 
+            chosen to be True. This step is repeated for all the subject groups,
+            ensuring that the desired data is selected and saved into the file
+            as an ndarray.
+            
+        By following these steps, the preprocessed EEG data for each subject grou
+        p can be saved separately, allowing for easy access and utilization in 
+        subsequent analyses.
+        
+        parameters: 
+            standard:      False|True
+            target:        False|True
+            distractor:    False|True
+            reaction_time: False|True
+            all_stimuli:   False|True
+
+        """
+        
+        if standard == True:
+            events = 'Standard'
+        elif target == True:
+            events = 'Target'
+        elif distractor == True:
+            events = 'Distractor'
+        elif reaction_time == True:
+            events = 'Reaction_time'
+        elif all_stimuli == True:
+            events = 'All_stimuli'
+        
+        DLB_data = self.DLB_data.stimuli.get(events)
+        
+        AD_data  = self.AD_data.stimuli.get(events)
+        
+        PDD_data = self.PDD_data.stimuli.get(events)
+  
+        PD_data  = self.PD_data.stimuli.get(events)
+    
+        HC_data  = self.HC_data.stimuli.get(events)
+        
+        subject_list = [DLB_data, AD_data, PDD_data, PD_data, HC_data]
+        
+        groups = ['DLB', 'AD', 'PDD', 'PD', 'HC']
+        
+        for i, j in zip(groups, subject_list):
+            path = os.path.join(f'preprocessed_data/{events}')
+            
+            
+            if False:
+                file_name = path + '_' + '{0}.npy'.format(i)
+                np.save(os.path.join(file_name), j)
+            else:
+                file_name = path + '_' + '{0}.pkl'.format(i)
+                with open(file_name, 'wb') as handle:
+                    pickle.dump(j, handle, protocol=pickle.HIGHEST_PROTOCOL)
 

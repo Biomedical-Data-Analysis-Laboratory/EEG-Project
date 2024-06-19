@@ -112,7 +112,7 @@ class ML:
                                                         self.groups_train, self.groups_test):
             # Instantiate the machine learning classifier
             estimator = RandomForestClassifier(criterion= 'gini',
-                                               max_features = 'auto',
+                                               max_features = 'sqrt', #np.sqrt(X_train.shape[1]), #'auto',
                                                max_depth = 30,
                                                min_samples_leaf =1,
                                                min_samples_split = 6,
@@ -204,7 +204,7 @@ class ML:
                #                                    learning_rate= self.gs_rg.best_params_.get('learning_rate'),
                 #                                   max_depth=self.gs_rg.best_params_.get('max_depth'),
                  #                                  random_state=21)
-            estimator = GradientBoostingClassifier(loss = 'deviance',
+            estimator = GradientBoostingClassifier(loss = 'log_loss', #'deviance',
                                                    n_estimators=100,
                                                    min_samples_leaf = 0.1,
                                                    learning_rate= 0.05,
